@@ -12,15 +12,15 @@ namespace Lesson_22
         {
             Console.Write("Введите размер массива случайных целых чисел: ");
             int n = Convert.ToInt32(Console.ReadLine());
-            Action<object> action1 = new Action<object>(CreateArray);
-            Task task1 = new Task(action1, n);
+            Func<object, int[]> func = new Func<object, int[]>(CreateArray);
+            Task<int[]> task1 = new Task<int[]>(func,n);
             Action<Task<int[]>> action2 = new Action<Task<int[]>>(Max);
             Task task2 = task1.ContinueWith(action2);
             Action<Task<int[]>> action3 = new Action<Task<int[]>>(Summa);
-            Task task3 = task2.ContinueWith(action3);
+            Task task3 = task1.ContinueWith(action3);
             Console.ReadKey();
         }
-        static void CreateArray(object z)
+        static int[] CreateArray(object z)
         {
             int n = (int)z;
             int[] array = new int[n];
@@ -30,6 +30,7 @@ namespace Lesson_22
                 array[i] = random.Next(0, 20);
                 Console.Write($"{array[i]} ");
             }
+            return array;
         }
         static void Max(Task<int[]> task)
         {
@@ -52,6 +53,7 @@ namespace Lesson_22
             {
                 Sum += array[i];
             }
+            Console.WriteLine("Сумма чисел: {0}", Sum);
         }
     }
 }
